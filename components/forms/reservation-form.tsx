@@ -59,77 +59,77 @@ export function ReservationForm({ className }: ReservationFormProps) {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Verificar autenticación
-    if (!isAuthenticated) {
-      setShowLoginModal(true);
-      return;
+  if (!isAuthenticated) {
+    setShowLoginModal(true);
+    return;
+  }
+
+  setError(null);
+  setIsSubmitting(true);
+
+  try {
+    if (!formData.habitacion) {
+      throw new Error('Por favor selecciona una habitación');
     }
 
-    setError(null);
-    setIsSubmitting(true);
+    if (!formData.fecha_entrada || !formData.fecha_salida) {
+      throw new Error('Por favor selecciona las fechas de entrada y salida');
+    }
 
-    try {
-      // Validaciones
-      if (!formData.habitacion) {
-        throw new Error('Por favor selecciona una habitación');
-      }
-      if (!formData.fecha_entrada || !formData.fecha_salida) {
-        throw new Error('Por favor selecciona las fechas de entrada y salida');
-      }
+    const entrada = new Date(formData.fecha_entrada);
+    const salida = new Date(formData.fecha_salida);
 
-      const entrada = new Date(formData.fecha_entrada);
-      const salida = new Date(formData.fecha_salida);
+    if (salida <= entrada) {
+      throw new Error('La fecha de salida debe ser posterior a la de entrada');
+    }
 
-      if (salida <= entrada) {
-        throw new Error('La fecha de salida debe ser posterior a la de entrada');
-      }
+    const habitacionSeleccionada = habitaciones.find(
+      (h) => h.id.toString() === formData.habitacion
+    );
 
-      // Obtener info de habitación para calcular el total
-      const habitacionSeleccionada = habitaciones.find(
-        (h) => h.id.toString() === formData.habitacion
-      );
+    if (!habitacionSeleccionada) {
+      throw new Error('Habitación no válida');
+    }
 
-      if (!habitacionSeleccionada) {
-        throw new Error('Habitación no válida');
-      }
+    const noches = Math.ceil(
+      (salida.getTime() - entrada.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
-      // Calcular total: precio_noche * número_noches
-      const noches = Math.ceil(
-        (salida.getTime() - entrada.getTime()) / (1000 * 60 * 60 * 24)
-      );
-      const total = (habitacionSeleccionada.precio * noches).toFixed(2);
+    const total = habitacionSeleccionada.precio * noches;
 
-      // Enviar reserva al backend con todos los campos requeridos
-      await crearReserva({
-        habitacion: parseInt(formData.habitacion),
-        fecha_entrada: formData.fecha_entrada,
-        fecha_salida: formData.fecha_salida,
-        personas: parseInt(formData.personas),
-        servicios: formData.servicios,
-        total: parseFloat(total),
-        estado: 'pendiente',
+    // 🔥 IMPORTANTE: validar respuesta del backend
+    await crearReserva({
+      habitacion: parseInt(formData.habitacion),
+      fecha_entrada: formData.fecha_entrada,
+      fecha_salida: formData.fecha_salida,
+      personas: parseInt(formData.personas),
+      servicios: formData.servicios,
+      total,
+      estado: 'pendiente',
+    });
+
+    setIsSubmitted(true);
+
+    setTimeout(() => {
+      setFormData({
+        habitacion: '',
+        fecha_entrada: '',
+        fecha_salida: '',
+        personas: '1',
+        servicios: [],
       });
 
-      setIsSubmitted(true);
-      setTimeout(() => {
-        setFormData({
-          habitacion: '',
-          fecha_entrada: '',
-          fecha_salida: '',
-          personas: '1',
-          servicios: [],
-        });
-        setIsSubmitted(false);
-      }, 3000);
-    } catch (err: any) {
-      setError(err.message || 'Error al crear la reserva');
-      console.error('[v0] Error:', err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+      setIsSubmitted(false);
+    }, 3000);
+
+  } catch (err: any) {
+    setError(err?.message || 'Error al crear la reserva');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (isSubmitted) {
     return (

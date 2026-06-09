@@ -162,30 +162,28 @@ export async function register(userData: {
   password2: string;
   first_name: string;
   last_name: string;
-  telefono?: string;
+  telefono: string;
 }) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/v1/register/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
+  const response = await fetch(`${API_BASE_URL}/api/v1/register/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
 
-    const data = await response.json();
+  const data = await response.json();
 
-    if (!data.Success) {
-      throw new Error(data.Message || 'Error al registrarse');
-    }
-
-    // Registro exitoso retorna { "Mensaje": "Se a creado el usuario" }
-    // No retorna tokens ni usuario. El usuario debe iniciar sesión después.
-    return {
-      Mensaje: data.Mensaje || data.Message || 'Cuenta creada correctamente',
-      // No establecer tokens ni usuario porque el registro no inicia sesión automáticamente
-    };
-  } catch (error: any) {
-    throw error;
+  // Si el servidor devuelve un error HTTP (400, 401, 500, etc.)
+  if (!response.ok) {
+    throw new Error(
+      data.Mensaje ||
+      data.Message ||
+      'Error al registrarse'
+    );
   }
+
+  return data;
 }
 
 export async function logout() {

@@ -62,7 +62,8 @@ await AuthService.register({
   password: 'pass123',
   password2: 'pass123',
   first_name: 'Juan',
-  last_name: 'Pérez'
+  last_name: 'Pérez',
+  telefono: '88888888'
 });
 
 // Logout

@@ -45,7 +45,7 @@ function getErrorMessage(error: string): { message: string; type: 'user' | 'emai
 }
 
 export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps) {
-  const { register, user } = useAuth();
+  const { register, login, user } = useAuth();
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     username: '',
@@ -106,39 +106,77 @@ export function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModa
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    setLoading(true);
+  e.preventDefault();
+  setError('');
 
-    try {
-      await register(formData);
-      toast({
-        title: '¡Cuenta creada correctamente!',
-        description: 'Ahora inicia sesión para continuar.',
-      });
-      onClose();
-      setFormData({
-        username: '',
-        email: '',
-        password: '',
-        password2: '',
-        first_name: '',
-        last_name: '',
-        telefono: '',
-      });
-    } catch (err: any) {
-      const { message, type } = getErrorMessage(err.message || '');
-      setError(message);
-      setErrorType(type);
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!validateForm()) return;
+
+  setLoading(true);
+
+  try {
+    // 1. crear usuario
+    await register(formData);
+
+    toast({
+      title: 'Cuenta creada',
+      description: 'Redirigiendo a tu sesión...',
+    });
+
+    // 2. login automático
+    await login(formData.username, formData.password);
+
+    // 3. cerrar modal (ya autenticado)
+    onClose();
+
+    // 4. limpiar formulario
+    setFormData({
+      username: '',
+      email: '',
+      password: '',
+      password2: '',
+      first_name: '',
+      last_name: '',
+      telefono: '',
+    });
+
+  } catch (err: any) {
+    const friendlyMessage = getFriendlyErrorMessage(err.message || '');
+      setError(friendlyMessage);
+      setErrorType('generic');
+  } finally {
+    setLoading(false);
+  }
+};
+
+function getFriendlyErrorMessage(error: string): string {
+  const msg = error.toLowerCase();
+
+  if (msg.includes('password') && msg.includes('number')) {
+    return 'La contraseña debe contener solo números.';
+  }
+
+  if (msg.includes('password') && msg.includes('short')) {
+    return 'La contraseña es muy corta. Usa al menos 6 caracteres.';
+  }
+
+  if (msg.includes('password') && msg.includes('weak')) {
+    return 'La contraseña es muy débil. Usa números y letras.';
+  }
+
+  if (msg.includes('username') && msg.includes('exists')) {
+    return 'Este usuario ya está en uso. Intenta con otro.';
+  }
+
+  if (msg.includes('email') && msg.includes('exists')) {
+    return 'Este correo ya está registrado. Intenta iniciar sesión.';
+  }
+
+  if (msg.includes('network') || msg.includes('fetch')) {
+    return 'Error de conexión. Revisa tu internet.';
+  }
+
+  return 'Algo salió mal. Intenta nuevamente.';
+}
 
   if (!isOpen) return null;
 

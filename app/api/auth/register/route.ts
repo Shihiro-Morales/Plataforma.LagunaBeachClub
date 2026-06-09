@@ -16,18 +16,35 @@ export async function POST(request: Request) {
       body: JSON.stringify(body),
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      const error = await response.json();
-      return NextResponse.json(error, { status: response.status });
+      return NextResponse.json(
+        {
+          success: false,
+          error: data,
+        },
+        {
+          status: response.status,
+        }
+      );
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json({
+      success: true,
+      ...data,
+    });
   } catch (error) {
-    console.error('[v0] API Error:', error);
+    console.error('[REGISTER_API]', error);
+
     return NextResponse.json(
-      { message: 'Error al conectar con el servidor' },
-      { status: 500 }
+      {
+        success: false,
+        message: 'Error al conectar con el servidor',
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

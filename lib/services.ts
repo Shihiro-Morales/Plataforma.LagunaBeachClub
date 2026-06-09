@@ -17,15 +17,16 @@ export const AuthService = {
   },
 
   async register(userData: {
-    username: string;
-    email: string;
-    password: string;
-    password2: string;
-    first_name: string;
-    last_name: string;
-  }) {
-    return api.register(userData);
-  },
+  username: string;
+  email: string;
+  password: string;
+  password2: string;
+  first_name: string;
+  last_name: string;
+  telefono: string;
+}) {
+  return api.register(userData);
+},
 
   logout() {
     api.logout();

@@ -86,7 +86,7 @@ export function Footer() {
               <h4 className="font-medium text-sm mb-3">{t.footer.followUs}</h4>
               <div className="flex gap-3">
                 <a
-                  href="https://facebook.com/laguna-beach-club"
+                  href="https://www.facebook.com/profile.php?id=61590209386499"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-background/10 hover:bg-primary transition-colors"
