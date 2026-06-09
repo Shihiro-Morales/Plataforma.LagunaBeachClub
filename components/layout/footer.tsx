@@ -63,20 +63,20 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="tel:+50512345678"
+                  href="tel:+50576035930"
                   className="flex items-center gap-3 text-sm text-background/80 hover:text-primary transition-colors"
                 >
                   <Phone className="h-5 w-5 text-primary" />
-                  <span>+505 1234 5678</span>
+                  <span>+505 7603 5930</span>
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:info@lagunabeachclub.com"
+                  href="mailto:https://docs.google.com/forms/d/e/1FAIpQLSdFKMJgSk6LaDTHVDHv4_YBf0wQ_G0_g0m4BAXfZ5672K7asg/viewform?usp=publish-editor"
                   className="flex items-center gap-3 text-sm text-background/80 hover:text-primary transition-colors"
                 >
                   <Mail className="h-5 w-5 text-primary" />
-                  <span>info@lagunabeachclub.com</span>
+                  <span>Sugerencia@lagunabeachclub.com</span>
                 </a>
               </li>
             </ul>
@@ -104,7 +104,7 @@ export function Footer() {
                   <Instagram className="h-5 w-5" />
                 </a>
                 <a
-                  href="https://tiktok.com/@lagunabeachclub"
+                  href="https://www.tiktok.com/@laguna.beach.club8?_r=1&_t=ZS-974t4Sj3Pb3"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-10 w-10 items-center justify-center rounded-full bg-background/10 hover:bg-primary transition-colors"
