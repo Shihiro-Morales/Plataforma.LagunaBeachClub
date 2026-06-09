@@ -72,10 +72,11 @@ export function Footer() {
               </li>
               <li>
                 <a
-                  href="mailto:https://docs.google.com/forms/d/e/1FAIpQLSdFKMJgSk6LaDTHVDHv4_YBf0wQ_G0_g0m4BAXfZ5672K7asg/viewform?usp=publish-editor"
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSdFKMJgSk6LaDTHVDHv4_YBf0wQ_G0_g0m4BAXfZ5672K7asg/viewform?usp=publish-editor"
                   className="flex items-center gap-3 text-sm text-background/80 hover:text-primary transition-colors"
                 >
                   <Mail className="h-5 w-5 text-primary" />
+
                   <span>Sugerencia@lagunabeachclub.com</span>
                 </a>
               </li>
